@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  api_service:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres_db
+    links:
+      - postgres_db:dbpostgresql
+  postgres_db:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=users_db
