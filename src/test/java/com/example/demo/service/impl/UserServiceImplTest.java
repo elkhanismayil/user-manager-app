@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -32,13 +33,16 @@ class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private AmqpTemplate rabbitTemplate;
+
     @InjectMocks
     private UserServiceImpl userServiceImpl;
 
 
     @BeforeEach
     void setUp() {
-        userServiceImpl = new UserServiceImpl(userRepository, userMapper);
+        userServiceImpl = new UserServiceImpl(userRepository, userMapper, rabbitTemplate);
     }
 
     @Test
