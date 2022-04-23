@@ -19,17 +19,16 @@ class UserRepositoryTest {
     @Autowired
     private UserRepository repository;
 
-    private User user;
-
     @BeforeEach
     void setUp() {
-        user = new User();
+        User user = new User();
         user.setId(1L);
         user.setName("Elxan");
         user.setSurname("Ismayilov");
         user.setEmail("elxan310@gmail.com");
         user.setPhone("+994705023590");
         user.setNationality("Azerbaijan");
+        user.setJobDescription("Job Desc");
         user.setDob(new Date(1988, Calendar.JUNE, 17));
         user.setUserCode(UUID.randomUUID().toString());
     }
@@ -40,22 +39,16 @@ class UserRepositoryTest {
     }
 
     @Test
-    void findById_Test() {
-        repository.save(user);
-
-        User expected = repository.findById(1L);
-
-        assertThat(expected).isNotNull();
+    void whenSaved_thenFindById() {
+        repository.save(User.builder().id(1L).build());
+        assertThat(repository.findById(1L)).isNotNull();
     }
 
 
     @Test
-    void findByName_Test() {
-        repository.save(user);
-
-        User expected = repository.findByName(null);
-
-        assertThat(expected).isNull();
+    void whenSaved_thenFindByName() {
+        repository.save(User.builder().name("Elxan").build());
+        assertThat(repository.findByName("Elxan")).isNotNull();
     }
 
 }
