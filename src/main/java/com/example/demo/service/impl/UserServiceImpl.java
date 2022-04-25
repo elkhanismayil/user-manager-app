@@ -6,7 +6,6 @@ import com.example.demo.mapper.UserMapper;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import com.example.demo.util.UserPageResponse;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +23,6 @@ public class UserServiceImpl implements UserService {
 
     public final UserRepository userRepository;
     public final UserMapper userMapper;
-
     public final AmqpTemplate rabbitTemplate;
 
     public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, AmqpTemplate rabbitTemplate) {
@@ -34,10 +32,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Value("${user.manager.rabbitmq.exchange}")
-    private String exchangeName;
+    private String exchange;
 
     @Value("${user.manager.rabbitmq.routingKey}")
-    private String routingKeyName;
+    private String routingKey;
 
 
     @Override
@@ -45,7 +43,7 @@ public class UserServiceImpl implements UserService {
         userDTO.setUserCode(UUID.randomUUID().toString());
         User user = userMapper.userDtoToUser(userDTO);
         User savedUser = userRepository.save(user);
-        sendToQueue(userDTO);
+//        sendToQueue(savedUser);
         return userMapper.userToUserDto(savedUser);
     }
 
@@ -77,8 +75,8 @@ public class UserServiceImpl implements UserService {
         return userMapper.userToUserDto(user);
     }
 
-    public void sendToQueue(UserDTO userDTO){
-        rabbitTemplate.convertAndSend(exchangeName, routingKeyName, userDTO);
-        System.out.println("Message sent : " + userDTO);
+    public void sendToQueue(User user) {
+        rabbitTemplate.convertAndSend(exchange, routingKey, user);
+        System.out.println("Message sent : " + user);
     }
 }

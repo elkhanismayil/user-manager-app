@@ -8,11 +8,13 @@ services:
       - "8080:8080"
     depends_on:
       - postgres_db
+
     links:
       - postgres_db:dbpostgresql
   postgres_db:
+    container_name: users_db
     image: postgres
-    restart: always
+    restart: on-failure
     ports:
       - "5432:5432"
     environment:
@@ -22,7 +24,7 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: rabbitmq
+    hostname: my-rabbit
     ports:
       - '5672:5672'
       - '15672:15672'
